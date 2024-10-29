@@ -126,6 +126,8 @@ VALUES
 
 update services set u_id = 8 where s_id in (4,6,10)
 
+update users set status = 0 where id in (3,6,8,9,11)
+
 -- Joining tables with foreign key
 select * from users INNER JOIN services ON users.id = services.u_id
 ORDER BY users.id ASC 
@@ -138,3 +140,47 @@ on users.id = services.u_id
 -- Priority on right table ie table 2
 Select * from users right join services 
 on users.id = services.u_id
+
+
+select * from users cross join services
+
+select * from services cross join users
+
+
+create table if not EXISTS stat(
+    s_id boolean,
+    status enum('married', 'single'),
+    PRIMARY KEY (s_id)
+);
+
+
+--Altering A table
+alter table users modify status smallint
+
+insert into stat
+Values(1, 'single'),
+(0,'married')
+
+
+ALTER TABLE users ADD CONSTRAINT fk_status FOREIGN KEY (status) REFERENCES stat(s_id);
+
+
+--Joining Multiple table
+select id, username as "Name", email, password, contact, gender,stat.status as "status",s_name as "service" from users 
+left join stat on users.status = stat.s_id
+left join services on users.id = services.u_id
+
+--GROUP BY AND HAVING
+SELECT stat.status, COUNT(users.status) as "Total users" 
+FROM users 
+RIGHT JOIN stat ON users.status = stat.s_id 
+where gender = 'F'
+GROUP BY stat.s_id
+having count(users.status) >2
+
+
+----SUB QUERIES
+select * from users
+where status in (select s_id from stat where status = 'single') and gender = 'M'
+
+
