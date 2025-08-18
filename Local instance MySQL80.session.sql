@@ -184,3 +184,6 @@ select * from users
 where status in (select s_id from stat where status = 'single') and gender = 'M'
 
 
+Create Database DataWarehouse
+
+use DataWarehouse
